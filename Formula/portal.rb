@@ -12,7 +12,7 @@ class Portal < Formula
 
   def install
     virtualenv_create(libexec, "python3.12")
-    system libexec/"bin/pip", "install", *std_pip_args(prefix: libexec), "git-portal[cli]==0.1.0"
+    system libexec/"bin/pip", "install", "--no-cache-dir", "git-portal[cli]==0.1.0"
     (bin/"portal").write_env_script libexec/"bin/portal", PATH: "#{libexec}/bin:${PATH}"
   end
 
