@@ -7,6 +7,8 @@ class Portal < Formula
   sha256 "f8fb90f920901599f058e2fb06f26865819699e9e615022c49994aa15693f32c"
   license "MIT"
 
+  depends_on "maturin" => :build
+  depends_on "rust" => :build
   depends_on "python@3.12"
   depends_on "git"
 
@@ -60,18 +62,9 @@ class Portal < Formula
     sha256 "4d351024c75c0f085a9febbb665ce8c0c6ec5d30e903bdb6394b7ede26aebb49"
   end
 
-  on_arm do
-    resource "pydantic-core" do
-      url "https://files.pythonhosted.org/packages/aa/32/9c2e8ccb57c01111e0fd091f236c7b371c1bccea0fa85247ac55b1e2b6b6/pydantic_core-2.41.5-cp312-cp312-macosx_11_0_arm64.whl"
-      sha256 "070259a8818988b9a84a449a2a7337c7f430a22acc0859c6b110aa7212a6d9c0"
-    end
-  end
-
-  on_intel do
-    resource "pydantic-core" do
-      url "https://files.pythonhosted.org/packages/5f/5d/5f6c63eebb5afee93bcaae4ce9a138f3373ca23df3ccaef086d0233a35a7/pydantic_core-2.41.5-cp312-cp312-macosx_10_12_x86_64.whl"
-      sha256 "f41a7489d32336dbf2199c8c0a215390a751c5b014c2c1c5366e817202e9cdf7"
-    end
+  resource "pydantic-core" do
+    url "https://files.pythonhosted.org/packages/71/70/23b021c950c2addd24ec408e9ab05d59b035b39d97cdc1130e1bce647bb6/pydantic_core-2.41.5.tar.gz"
+    sha256 "08daa51ea16ad373ffd5e7606252cc32f07bc72b28284b6bc9c6df804816476e"
   end
 
   resource "pydantic-settings" do
@@ -115,30 +108,7 @@ class Portal < Formula
   end
 
   def install
-    venv = virtualenv_create(libexec, "python3.12")
-
-    # Install pydantic-core from pre-built wheel (Rust extension — cannot build from sdist)
-    # Homebrew prefixes cached downloads with a hash, breaking the wheel filename.
-    # Copy it with the correct name so pip accepts it.
-    pydantic_core_res = resource("pydantic-core")
-    pydantic_core_res.fetch
-    cached = pydantic_core_res.cached_download
-    whl_name = File.basename(cached.to_s).sub(/^[a-f0-9]+--/, "")
-    tmp_whl = buildpath/whl_name
-    cp cached, tmp_whl
-    system libexec/"bin/pip", "install", "--no-deps", "--ignore-installed", tmp_whl.to_s
-
-    # Install remaining pure-Python resources from sdist
-    resources.each do |r|
-      next if r.name == "pydantic-core"
-
-      r.stage do
-        venv.pip_install Pathname.pwd
-      end
-    end
-
-    # Install git-portal itself
-    venv.pip_install_and_link buildpath
+    virtualenv_install_with_resources
   end
 
   test do
