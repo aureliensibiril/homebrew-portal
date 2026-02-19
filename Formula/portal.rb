@@ -117,15 +117,12 @@ class Portal < Formula
   def install
     venv = virtualenv_create(libexec, "python3.12")
 
-    # Install pydantic-core from wheel first (Rust extension — cannot build from sdist)
-    resource("pydantic-core").stage do
-      whl = Dir["*.whl"].first
-      if whl
-        system libexec/"bin/pip", "install", "--no-deps", "--ignore-installed", whl
-      else
-        venv.pip_install Pathname.pwd
-      end
-    end
+    # Install pydantic-core from pre-built wheel (Rust extension — cannot build from sdist)
+    # Use cached_download to get the .whl file before Homebrew extracts it
+    pydantic_core_res = resource("pydantic-core")
+    pydantic_core_res.fetch
+    system libexec/"bin/pip", "install", "--no-deps", "--ignore-installed",
+           pydantic_core_res.cached_download.to_s
 
     # Install remaining pure-Python resources from sdist
     resources.each do |r|
