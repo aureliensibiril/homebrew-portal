@@ -7,6 +7,8 @@ class Portal < Formula
   sha256 "020cd42e86965ccf852fbc27abaa1cde3b3b781f79d5b5caadc7fbefb9caf4b8"
   license "MIT"
 
+  depends_on "maturin" => :build
+  depends_on "rust" => :build
   depends_on "python@3.12"
   depends_on "git"
 
@@ -16,8 +18,8 @@ class Portal < Formula
   end
 
   resource "git-portal" do
-    url "https://files.pythonhosted.org/packages/ab/f8/5086e2e4d700cc9f6881a1dbf327671607d5b0ef319b9a5475e47bd93a90/git_portal-0.1.0.tar.gz"
-    sha256 "f8fb90f920901599f058e2fb06f26865819699e9e615022c49994aa15693f32c"
+    url "https://files.pythonhosted.org/packages/9e/c8/c114bc277ffe21db3b8423368d1ec9019fcf459b600fcdd9dab851c8c64d/git_portal-0.1.1.tar.gz"
+    sha256 "020cd42e86965ccf852fbc27abaa1cde3b3b781f79d5b5caadc7fbefb9caf4b8"
   end
 
   resource "gitdb" do
