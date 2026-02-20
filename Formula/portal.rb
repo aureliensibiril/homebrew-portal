@@ -7,6 +7,12 @@ class Portal < Formula
   sha256 "020cd42e86965ccf852fbc27abaa1cde3b3b781f79d5b5caadc7fbefb9caf4b8"
   license "MIT"
 
+  bottle do
+    root_url "https://github.com/aureliensibiril/homebrew-portal/releases/download/portal-0.1.1"
+    sha256 cellar: :any, arm64_sequoia: "ec31eb1b2987aa36b798eb58d2cd5e5cd4e396b0fcb111cc30c1597b0d26130b"
+    sha256 cellar: :any, arm64_sonoma: "bd9fb9d973186ee8a30060bbc9d81efac4ae46797ad1fe48d24d55261bdd1e8e"
+  end
+
   depends_on "maturin" => :build
   depends_on "rust" => :build
   depends_on "python@3.12"
